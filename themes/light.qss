@@ -1,0 +1,312 @@
+/*
+   Light theme - coastal blue palette with soft cards
+   Avoids default purple, adds clearer hierarchy and room for a kiosk view.
+*/
+
+/* =========================
+   GLOBAL
+========================= */
+QWidget {
+    background-color: #f2f5fb;
+    color: #1f2937;
+    font-family: "Inter", "Segoe UI", "Manrope", Arial;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+}
+
+QMainWindow {
+    background-color: #eef3fa;
+}
+
+QLabel {
+    background: transparent;
+    color: #1f2937;
+    padding: 2px 4px;
+}
+
+/* =========================
+   HEADER
+========================= */
+#AppHeader {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                stop:0 #dff1ff, stop:1 #d8e8ff);
+    border: 1px solid #d2e3f7;
+    border-radius: 14px;
+    padding: 10px 16px;
+    margin: 6px 8px;
+}
+
+#LogoLabel {
+    background: #ffffff;
+    border: 1px solid #dbe7ff;
+    border-radius: 14px;
+    padding: 6px;
+}
+
+#CollegeTitle {
+    color: #0f172a;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+}
+
+#AppTitle {
+    color: #1d4c8b;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+/* =========================
+   PANELS
+========================= */
+QFrame {
+    background: transparent;
+    border: none;
+}
+
+QGroupBox {
+    background-color: #ffffff;
+    border: 1px solid #dbe7ff;
+    border-radius: 12px;
+}
+
+QGroupBox {
+    margin-top: 14px;
+    padding: 24px 24px 24px 24px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 22px;
+    padding: 6px 12px 8px 12px; /* extra vertical padding so title clears border */
+    color: #3b5b8a;
+    background: transparent;
+    font-size: 14px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+QPushButton {
+    background-color: #0ba5e6;
+    color: #ffffff;
+    border: 1px solid #0894ce;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    min-height: 36px;
+}
+
+QPushButton:hover {
+    background-color: #098fc8;
+    border-color: #077eb0;
+}
+
+QPushButton:pressed {
+    background-color: #0a7fb0;
+}
+
+QPushButton:flat {
+    background: transparent;
+    color: #0a6fb0;
+    border: none;
+    font-weight: 600;
+}
+
+QPushButton:flat:hover {
+    background-color: rgba(13, 148, 228, 0.08);
+}
+
+/* =========================
+   INPUTS
+========================= */
+QLineEdit, QDateEdit, QComboBox {
+    background-color: #ffffff;
+    border: 1px solid #d0ddf2;
+    border-radius: 10px;
+    padding: 9px 10px;
+    selection-background-color: #c7e7ff;
+    selection-color: #0f172a;
+}
+
+QLineEdit:focus, QDateEdit:focus, QComboBox:focus {
+    border: 2px solid #0ba5e6;
+}
+
+QLineEdit {
+    color: #0f172a;
+}
+
+QLineEdit[echoMode="2"] { /* password */
+    letter-spacing: 2px;
+}
+
+QDateEdit::drop-down, QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: right center;
+    width: 24px;
+    border: none;
+    background: transparent;
+}
+
+QDateEdit::down-arrow, QComboBox::down-arrow {
+    image: none;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #0b6cb3;
+    margin-right: 6px;
+}
+
+/* =========================
+   CALENDAR
+========================= */
+QCalendarWidget {
+    background-color: #ffffff;
+    border: 1px solid #d0ddf2;
+    border-radius: 12px;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar {
+    background: #eef3fb;
+    border-bottom: 1px solid #dbe7ff;
+}
+
+QCalendarWidget QToolButton {
+    background: transparent;
+    color: #1f2937;
+    font-weight: 600;
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+
+QCalendarWidget QToolButton:hover {
+    background: rgba(13, 148, 228, 0.08);
+}
+
+QCalendarWidget QAbstractItemView {
+    background: #ffffff;
+    color: #1f2937;
+    selection-background-color: #0ba5e6;
+    selection-color: #ffffff;
+    outline: none;
+}
+
+QCalendarWidget QAbstractItemView:item:hover {
+    background: rgba(13, 148, 228, 0.08);
+}
+
+QCalendarWidget QAbstractItemView:disabled {
+    color: #9ca3af;
+}
+
+/* =========================
+   TABLES
+========================= */
+QTableWidget {
+    background-color: #ffffff;
+    border: 1px solid #dbe7ff;
+    border-radius: 12px;
+    gridline-color: #e5edf8;
+    font-size: 13px;
+    alternate-background-color: #f7fbff;
+    selection-background-color: #e3f3ff;
+    selection-color: #0f172a;
+    padding: 12px;
+}
+
+QHeaderView::section {
+    background-color: #eef3fb;
+    color: #4b5878;
+    padding: 10px 14px;
+    border: none;
+    border-bottom: 1px solid #dbe7ff;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+QTableWidget::item {
+    padding: 12px 16px;
+    color: #1f2937;
+}
+
+QTableWidget::item:selected {
+    background-color: #e3f3ff;
+    color: #0f172a;
+}
+
+QTableCornerButton::section {
+    background-color: #eef3fb;
+    border: none;
+    border-bottom: 1px solid #dbe7ff;
+}
+
+/* =========================
+   TABS
+========================= */
+QTabWidget::pane {
+    background: #f8fbff;
+    border: 1px solid #dbe7ff;
+    border-radius: 12px;
+    margin-top: 6px;
+    padding: 16px 18px 18px 18px;
+}
+
+QTabBar::tab {
+    background: transparent;
+    color: #5f6c85;
+    padding: 10px 20px;
+    margin-right: 4px;
+    border-bottom: 3px solid transparent;
+    font-weight: 600;
+}
+
+QTabBar::tab:selected {
+    color: #0b6cb3;
+    border-bottom: 3px solid #0ba5e6;
+}
+
+QTabBar::tab:hover {
+    background-color: rgba(13, 148, 228, 0.08);
+    color: #0f172a;
+}
+
+/* =========================
+   SCROLLBARS
+========================= */
+QScrollBar:vertical {
+    background: transparent;
+    width: 12px;
+    margin: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #b8c7df;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #98b2d8;
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line {
+    height: 0;
+}
+
+/* =========================
+   MISC
+========================= */
+QMessageBox {
+    background: #ffffff;
+}
+
+QStatusBar {
+    background: transparent;
+    color: #4b5878;
+}

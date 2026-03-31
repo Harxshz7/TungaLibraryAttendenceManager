@@ -1,0 +1,41 @@
+QWidget {
+    background-color: #2b2b2b;
+    color: #ddd;
+    font-family: "Inter";
+    font-size: 12px;
+}
+
+/* BUTTONS */
+QPushButton {
+    background-color: #3a6ea5;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+}
+
+QPushButton:hover {
+    background-color: #4f81bd;
+}
+
+/* TABLES */
+QTableWidget {
+    background-color: #1e1e1e;
+    gridline-color: #444;
+}
+
+QHeaderView::section {
+    background-color: #333;
+    border: 1px solid #444;
+}
+
+/* TABS */
+QTabBar::tab {
+    background: #333;
+    padding: 8px 14px;
+}
+
+QTabBar::tab:selected {
+    background: #1e1e1e;
+    font-weight: bold;
+}
