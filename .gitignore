@@ -19,6 +19,8 @@ env/
 build/
 dist/
 *.spec
+# Keep our PyInstaller spec file
+!TungaLibrary.spec
 
 # IDE
 .vscode/

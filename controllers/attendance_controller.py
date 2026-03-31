@@ -1,14 +1,18 @@
+import os
 from PySide6.QtCore import QObject, QTimer, Signal
 from services.attendance_service import handle_scan
 from services.session_normalizer import normalize_stale_sessions
 from models.session_repo import get_live_sessions, get_present_count
 from utils.id_utils import normalize_id
+from utils.resource_utils import data_path
 from views.student_popup import StudentPopup
 from models.student_repo import get_student_basic_info
 from models.database import get_connection
 from views.input_capture_window import InputCaptureWindow
 from models.input_mode import InputMode
 from datetime import datetime
+
+_PHOTO_EXTENSIONS = (".png", ".jpg", ".JPG", ".jpeg", ".JPEG", ".PNG")
 
 class AttendanceController(QObject):
     data_updated = Signal(list, int)  # rows, present_count
@@ -26,6 +30,14 @@ class AttendanceController(QObject):
         # initial normalization
         normalize_stale_sessions()
         self.refresh()
+
+    def _find_photo(self, student_id: str) -> str | None:
+        """Return absolute path to student photo, trying all common extensions."""
+        for ext in _PHOTO_EXTENSIONS:
+            p = data_path(f"photos/{student_id}{ext}")
+            if os.path.exists(p):
+                return p
+        return None
 
     def set_input_mode(self, mode: InputMode):
         self.input_mode = mode
@@ -99,7 +111,7 @@ class AttendanceController(QObject):
                 message="Check-in recorded",
                 student_id=student_id,
                 class_grade=class_grade,
-                image_path=f"photos/{student_id}.png",
+                image_path=self._find_photo(student_id),
                 is_login=True,
                 total_visits=total_visits,
                 check_in_time=start_fmt,
@@ -110,7 +122,7 @@ class AttendanceController(QObject):
                 message="Check-out recorded",
                 student_id=student_id,
                 class_grade=class_grade,
-                image_path=f"photos/{student_id}.png",
+                image_path=self._find_photo(student_id),
                 is_login=False,
                 session_seconds=last_duration,
                 check_in_time=start_fmt,

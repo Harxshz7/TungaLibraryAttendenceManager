@@ -19,6 +19,7 @@ from models.session_repo import (
     get_student_history_range
 )
 from utils.time_utils import format_duration
+from utils.resource_utils import data_path
 
 
 class StudentHistoryWindow(QDialog):
@@ -144,7 +145,7 @@ class StudentHistoryWindow(QDialog):
             )
             return
 
-        report_dir = Path("reports/student")
+        report_dir = Path(data_path("reports/student"))
         report_dir.mkdir(parents=True, exist_ok=True)
 
         wb = Workbook()
@@ -207,7 +208,7 @@ class StudentHistoryWindow(QDialog):
             )
             return
 
-        report_dir = Path("reports/student")
+        report_dir = Path(data_path("reports/student"))
         report_dir.mkdir(parents=True, exist_ok=True)
 
         file_path = report_dir / f"Student_{self.student_id}_Filtered.pdf"

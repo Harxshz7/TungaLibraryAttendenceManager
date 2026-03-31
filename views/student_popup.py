@@ -125,9 +125,10 @@ class StudentPopup(QWidget):
         photo.setFixedSize(146, 166)
         photo.setAlignment(Qt.AlignCenter)
 
-        resolved_image = resource_path(image_path) if image_path else None
-        if resolved_image and os.path.exists(resolved_image):
-            pix = QPixmap(resolved_image)
+        # image_path is already an absolute path from data_path(); use directly.
+        # Fall back to the bundled default avatar (resource_path) if missing.
+        if image_path and os.path.exists(image_path):
+            pix = QPixmap(image_path)
         else:
             pix = QPixmap(resource_path("assets/default_avatar.png"))
 

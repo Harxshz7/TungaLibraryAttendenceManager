@@ -3,8 +3,9 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from models.database import get_connection
 from datetime import date
+from utils.resource_utils import data_path
 
-REPORT_DIR = Path("reports/monthly")
+REPORT_DIR = Path(data_path("reports/monthly"))
 
 
 def export_monthly_report(year: int, month: int) -> str:

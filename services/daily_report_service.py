@@ -3,9 +3,10 @@ from pathlib import Path
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from models.database import get_connection
+from utils.resource_utils import data_path
 
 
-REPORT_DIR = Path("reports/daily")
+REPORT_DIR = Path(data_path("reports/daily"))
 
 
 def export_daily_report(day: datetime.date) -> str:
