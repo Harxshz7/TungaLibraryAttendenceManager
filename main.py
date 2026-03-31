@@ -4,6 +4,7 @@ from PySide6.QtCore import QTimer
 from PySide6.QtGui import QAction, QFontDatabase, QIcon
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 from utils.resource_utils import resource_path
+from models.database import init_db
 from views.main_window import MainWindow
 
 
@@ -39,6 +40,8 @@ def build_tray_icon():
 
 
 def main():
+    init_db()  # create tables if DB doesn't exist yet (first run / fresh install)
+
     app = QApplication(sys.argv)
     load_fonts()
     load_stylesheet(app, "themes/light.qss")
