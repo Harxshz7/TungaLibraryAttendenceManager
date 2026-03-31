@@ -53,14 +53,10 @@ a = Analysis(
     runtime_hooks=[],
     excludes=[
         # Not used at runtime
+        # NOTE: do NOT exclude urllib/http/email — openpyxl->mimetypes needs them
         'matplotlib',
         'tkinter',
         'unittest',
-        'email',
-        'xmlrpc',
-        'http',
-        'urllib',
-        'logging.handlers',
         'distutils',
         'setuptools',
         'pip',
