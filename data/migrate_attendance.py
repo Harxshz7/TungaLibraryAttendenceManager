@@ -15,12 +15,12 @@ def migrate():
     if not OLD_DB.exists():
         raise FileNotFoundError(f"OLD DB not found: {OLD_DB}")
 
-    print("🔌 Connecting to NEW database...")
+    print("Connecting to NEW database...")
     conn = sqlite3.connect(NEW_DB)
     cur = conn.cursor()
 
     try:
-        print("🧹 Clearing existing scans & sessions...")
+        print("Clearing existing scans & sessions...")
         cur.executescript("""
         BEGIN TRANSACTION;
 
@@ -33,17 +33,17 @@ def migrate():
         COMMIT;
         """)
 
-        print("🔗 Attaching OLD database (read-only)...")
+        print("Attaching OLD database (read-only)...")
         cur.execute(f"ATTACH DATABASE '{OLD_DB}' AS old")
 
-        print("📥 Importing scans...")
+        print("Importing scans...")
         cur.execute("""
             INSERT INTO scans (student_id, scanned_at)
             SELECT student_id, scanned_at
             FROM old.scans
         """)
 
-        print("📥 Importing sessions...")
+        print("Importing sessions...")
         cur.execute("""
             INSERT INTO sessions (
                 student_id,
@@ -59,7 +59,7 @@ def migrate():
             FROM old.sessions
         """)
 
-        print("🔍 Verifying counts...")
+        print("Verifying counts...")
 
         cur.execute("SELECT COUNT(*) FROM scans")
         new_scans = cur.fetchone()[0]
@@ -79,14 +79,14 @@ def migrate():
         print(f"   NEW sessions  : {new_sessions}")
 
         if old_scans != new_scans or old_sessions != new_sessions:
-            raise RuntimeError("❌ Row count mismatch! Migration aborted.")
+            raise RuntimeError("Row count mismatch! Migration aborted.")
 
         conn.commit()
-        print("✅ Migration completed successfully.")
+        print("Migration completed successfully.")
 
     except Exception as e:
         conn.rollback()
-        print("❌ Migration failed. Rolling back.")
+        print("Migration failed. Rolling back.")
         raise e
 
     finally:

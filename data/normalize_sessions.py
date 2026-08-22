@@ -6,7 +6,7 @@ from pathlib import Path
 # -----------------------------
 # CONFIGURATION
 # -----------------------------
-DB_PATH = Path("attendance.db")   # 🔁 change if needed
+DB_PATH = Path("attendance.db")   # change if needed
 MIN_SEC = 40 * 60   # 2400 seconds
 MAX_SEC = 45 * 60   # 2700 seconds
 THRESHOLD = 50 * 60 # 3000 seconds
@@ -19,7 +19,7 @@ def normalize_sessions():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
-    print("🔍 Fetching sessions exceeding 50 minutes...")
+    print("Fetching sessions exceeding 50 minutes...")
 
     cur.execute("""
         SELECT id, start_at
@@ -31,11 +31,11 @@ def normalize_sessions():
     rows = cur.fetchall()
 
     if not rows:
-        print("✅ No sessions need normalization.")
+        print("No sessions need normalization.")
         conn.close()
         return
 
-    print(f"⚙ Normalizing {len(rows)} sessions...")
+    print(f"Normalizing {len(rows)} sessions...")
 
     for session_id, start_at in rows:
         start_dt = datetime.fromisoformat(start_at)
@@ -58,7 +58,7 @@ def normalize_sessions():
     conn.commit()
     conn.close()
 
-    print("✅ Normalization completed successfully.")
+    print("Normalization completed successfully.")
 
 
 if __name__ == "__main__":

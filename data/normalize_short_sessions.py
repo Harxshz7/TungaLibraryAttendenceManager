@@ -20,7 +20,7 @@ def normalize_short_sessions():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
-    print("🔍 Fetching sessions shorter than 5 minutes...")
+    print("Fetching sessions shorter than 5 minutes...")
 
     cur.execute("""
         SELECT id, start_at
@@ -32,11 +32,11 @@ def normalize_short_sessions():
     rows = cur.fetchall()
 
     if not rows:
-        print("✅ No short sessions to normalize.")
+        print("No short sessions to normalize.")
         conn.close()
         return
 
-    print(f"⚙ Normalizing {len(rows)} short sessions...")
+    print(f"Normalizing {len(rows)} short sessions...")
 
     for session_id, start_at in rows:
         start_dt = datetime.fromisoformat(start_at)
@@ -58,7 +58,7 @@ def normalize_short_sessions():
     conn.commit()
     conn.close()
 
-    print("✅ Short session normalization completed successfully.")
+    print("Short session normalization completed successfully.")
 
 
 if __name__ == "__main__":

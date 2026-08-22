@@ -291,7 +291,7 @@ class MainWindow(QMainWindow):
     #     # Business logic only
     #     self.attendance_controller.process_scan(sid)
     #
-    #     # 🔔 SHOW POPUP HERE (login / logout)
+    #     # SHOW POPUP HERE (login / logout)
     #     self.app_controller.show_student_popup(
     #         sid=sid,
     #         name=student["name"]
@@ -388,10 +388,10 @@ class MainWindow(QMainWindow):
     #         self.scan_input.setFocus()
     #         return
     #
-    #     # 🔥 ONLY business logic now
+    #     # ONLY business logic now
     #     self.attendance_controller.process_scan(sid)
     #
-    #     # ❌ No student info update here
+    #     # No student info update here
     #     self.scan_input.setFocus()
 
     def update_clock(self):

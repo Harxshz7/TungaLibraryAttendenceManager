@@ -16,7 +16,7 @@ def normalize_legacy_sessions():
     cur = conn.cursor()
     now = datetime.now()
 
-    print("🔧 Normalizing legacy sessions...")
+    print("Normalizing legacy sessions...")
 
     # -------------------------------------------------
     # 1. FIX OPEN SESSIONS (end_at IS NULL)
@@ -28,7 +28,7 @@ def normalize_legacy_sessions():
     """)
 
     open_rows = cur.fetchall()
-    print(f"• Found {len(open_rows)} open sessions")
+    print(f"Found {len(open_rows)} open sessions")
 
     for sid, start_at in open_rows:
         start_dt = datetime.fromisoformat(start_at)
@@ -60,7 +60,7 @@ def normalize_legacy_sessions():
     """, (MAX_ALLOWED,))
 
     bad_rows = cur.fetchall()
-    print(f"• Found {len(bad_rows)} sessions with absurd duration")
+    print(f"Found {len(bad_rows)} sessions with absurd duration")
 
     for sid, start_at, end_at, old_dur in bad_rows:
         start_dt = datetime.fromisoformat(start_at)
@@ -81,7 +81,7 @@ def normalize_legacy_sessions():
     conn.commit()
     conn.close()
 
-    print("✅ Legacy session normalization complete.")
+    print("Legacy session normalization complete.")
 
 
 if __name__ == "__main__":
