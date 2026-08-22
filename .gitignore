@@ -34,8 +34,19 @@ desktop.ini
 # Logs / Reports
 *.log
 
-# Data (optional — remove if you want to track data files)
-# data/
+# Data
+data/*.db
 
-# Photos (large binary files — optional)
-# photos/
+# Photos
+photos/
+
+# Reports
+reports/daily/
+reports/monthly/
+reports/student/
+reports/*.exe
+reports/*.pdf
+
+# Generated files
+label_test.png
+*.xlsx
