@@ -49,7 +49,8 @@ def export_monthly_report(year: int, month: int) -> str:
             CASE
                 WHEN s.end_at IS NOT NULL THEN s.duration_sec
                 ELSE strftime('%s','now','localtime') - strftime('%s', s.start_at)
-            END AS dur
+            END AS dur,
+            s.is_estimated
         FROM sessions s
         LEFT JOIN students st ON st.student_id = s.student_id
         WHERE strftime('%Y', s.start_at) = ?
@@ -57,7 +58,8 @@ def export_monthly_report(year: int, month: int) -> str:
     )
     SELECT
         id, name, class,
-        SUM(dur) AS total_sec
+        SUM(dur) AS total_sec,
+        MAX(is_estimated) AS is_est
     FROM fixed
     GROUP BY id, name, class
     ORDER BY class, id;
@@ -81,7 +83,7 @@ def export_monthly_report(year: int, month: int) -> str:
         for row in rows:
             ws.append(row)
 
-        for col in ("A", "B", "C", "D"):
+        for col in ("A", "B", "C", "D", "E"):
             ws.column_dimensions[col].width = 22
 
     # Sheet 1 – Daily Summary
@@ -98,11 +100,11 @@ def export_monthly_report(year: int, month: int) -> str:
         return f"{h}h {m}m"
 
     # All students
-    all_data = [(i, n, c, fmt(s)) for i, n, c, s in all_rows]
+    all_data = [(i, n, c, fmt(s), "Yes" if e else "") for i, n, c, s, e in all_rows]
 
     add_sheet(
         "All Students",
-        ["ID", "Name", "Class", "Time Spent"],
+        ["ID", "Name", "Class", "Time Spent", "Estimated"],
         all_data
     )
 
@@ -111,9 +113,9 @@ def export_monthly_report(year: int, month: int) -> str:
     puc = [r for r in all_data if "PUC" in r[2].upper()]
     lecturers = [r for r in all_data if r[0].startswith("L-")]
 
-    add_sheet("Degree Students", ["ID", "Name", "Class", "Time Spent"], degree)
-    add_sheet("PUC Students", ["ID", "Name", "Class", "Time Spent"], puc)
-    add_sheet("Lecturers", ["ID", "Name", "Class", "Time Spent"], lecturers)
+    add_sheet("Degree Students", ["ID", "Name", "Class", "Time Spent", "Estimated"], degree)
+    add_sheet("PUC Students", ["ID", "Name", "Class", "Time Spent", "Estimated"], puc)
+    add_sheet("Lecturers", ["ID", "Name", "Class", "Time Spent", "Estimated"], lecturers)
 
     file_path = REPORT_DIR / f"Monthly_{year}_{month:02}.xlsx"
     wb.save(file_path)

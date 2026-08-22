@@ -17,7 +17,8 @@ def get_live_sessions():
                 strftime('%s','now','localtime') - strftime('%s', s.start_at)
             ELSE
                 s.duration_sec
-        END AS duration_sec
+        END AS duration_sec,
+        s.is_estimated
     FROM sessions s
     LEFT JOIN students st ON st.student_id = s.student_id
     WHERE date(s.start_at) = date('now','localtime')
@@ -58,7 +59,8 @@ def get_student_history(student_id: str):
             date(start_at),
             time(start_at),
             time(end_at),
-            duration_sec
+            duration_sec,
+            is_estimated
         FROM sessions
         WHERE student_id = ?
         ORDER BY start_at DESC
@@ -77,12 +79,41 @@ def get_student_history_range(student_id: str, start_date, end_date):
             date(start_at),
             time(start_at),
             time(end_at),
-            duration_sec
+            duration_sec,
+            is_estimated
         FROM sessions
         WHERE student_id = ?
           AND date(start_at) BETWEEN date(?) AND date(?)
         ORDER BY start_at DESC
     """, (student_id, start_date, end_date))
+
+    rows = cur.fetchall()
+    conn.close()
+    return rows
+
+def get_estimated_sessions(limit=50):
+    """
+    Returns sessions where is_estimated = 1, ordered by start_at DESC,
+    joined with student name/class for the review queue.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT
+            s.student_id,
+            COALESCE(st.name, ''),
+            COALESCE(st.class, ''),
+            date(s.start_at),
+            time(s.start_at),
+            time(s.end_at),
+            s.duration_sec
+        FROM sessions s
+        LEFT JOIN students st ON st.student_id = s.student_id
+        WHERE s.is_estimated = 1
+        ORDER BY s.start_at DESC
+        LIMIT ?
+    """, (limit,))
 
     rows = cur.fetchall()
     conn.close()

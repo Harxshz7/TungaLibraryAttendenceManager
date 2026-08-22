@@ -51,7 +51,8 @@ def export_daily_report(day: datetime.date) -> str:
             CASE
                 WHEN s.end_at IS NOT NULL THEN s.duration_sec
                 ELSE strftime('%s','now','localtime') - strftime('%s', s.start_at)
-            END AS dur
+            END AS dur,
+            s.is_estimated
         FROM sessions s
         LEFT JOIN students st ON st.student_id = s.student_id
         WHERE date(s.start_at) = date(?)
@@ -60,7 +61,8 @@ def export_daily_report(day: datetime.date) -> str:
         id,
         name,
         class,
-        SUM(dur)
+        SUM(dur),
+        MAX(is_estimated)
     FROM fixed
     GROUP BY id, name, class
     ORDER BY class, id;
@@ -99,18 +101,18 @@ def export_daily_report(day: datetime.date) -> str:
     # ---------- SHEET 2 ----------
     ws2 = wb.create_sheet("Attendance")
     ws2["A1"] = f"Attendance — {title_date}"
-    ws2.merge_cells("A1:D1")
+    ws2.merge_cells("A1:E1")
     ws2["A1"].font = Font(bold=True, size=14)
     ws2["A1"].alignment = Alignment(horizontal="center")
 
-    ws2.append(["ID", "Name", "Class", "Time Spent"])
+    ws2.append(["ID", "Name", "Class", "Time Spent", "Estimated"])
 
-    for sid, name, cls, dur in attendance:
+    for sid, name, cls, dur, is_est in attendance:
         h = dur // 3600
         m = (dur % 3600) // 60
-        ws2.append([sid, name, cls, f"{h}h {m}m"])
+        ws2.append([sid, name, cls, f"{h}h {m}m", "Yes" if is_est else ""])
 
-    for col_letter in ("A", "B", "C", "D"):
+    for col_letter in ("A", "B", "C", "D", "E"):
         ws2.column_dimensions[col_letter].width = 22
 
 

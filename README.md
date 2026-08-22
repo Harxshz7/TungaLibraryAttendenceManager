@@ -11,7 +11,7 @@ A PySide6 desktop kiosk application for tracking library attendance via barcode/
 - **Analytics** — Dashboard tab showing peak hours, daily averages, top users, and weekly trends (`analytics_service.py`)
 - **Themes** — Light, dark, and college-blue QSS stylesheets (`themes/`), loaded at startup in `main.py`
 - **Auto-Export** — `AppController.auto_export_yesterday()` runs on startup to export the previous day's report if not already done
-- **Stale Session Cleanup** — `normalize_stale_sessions()` auto-closes open sessions older than 50 minutes with normalized duration
+- **Stale Session Cleanup** — `normalize_stale_sessions()` auto-closes open sessions older than 50 minutes, storing the true elapsed time but flagging them as `is_estimated = 1` (student likely forgot to scan out). Flagged sessions can be reviewed via the "Review Flagged Sessions" button.
 
 ## Tech Stack
 
@@ -52,7 +52,8 @@ A PySide6 desktop kiosk application for tracking library attendance via barcode/
 │   ├── student_history_window.py   # Dialog with date filter, Excel/PDF export
 │   ├── analytics_tab.py            # Analytics dashboard UI
 │   ├── input_capture_window.py     # Hidden Qt window for scanner capture
-│   └── input_capture.py            # pynput keyboard listener (unused)
+│   ├── input_capture.py            # pynput keyboard listener (unused)
+│   └── review_sessions_window.py   # Dialog for reviewing estimated/flagged sessions
 ├── utils/
 │   ├── id_utils.py          # normalize_id(): adds S- prefix, strips invalid chars
 │   ├── time_utils.py        # format_duration(): HH:MM:SS formatter
@@ -63,6 +64,7 @@ A PySide6 desktop kiosk application for tracking library attendance via barcode/
 │   └── college_blue.qss
 ├── data/
 │   ├── migrate_attendance.py       # One-shot migration from old_attendance.db
+│   ├── add_is_estimated_column.py  # Adds is_estimated column to existing DBs
 │   ├── normalize_sessions.py       # Batch normalize long sessions
 │   └── normalize_short_sessions.py # Batch normalize short sessions
 ├── tools/

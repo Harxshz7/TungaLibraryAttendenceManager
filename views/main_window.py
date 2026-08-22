@@ -22,6 +22,7 @@ from datetime import date
 from datetime import datetime, timedelta
 from PySide6.QtGui import QPixmap
 from views.analytics_tab import AnalyticsTab
+from views.review_sessions_window import ReviewSessionsWindow
 from models.input_mode import InputMode
 from utils.resource_utils import resource_path
 
@@ -190,6 +191,11 @@ class MainWindow(QMainWindow):
         self.btn_export_daily.setFocusPolicy(Qt.NoFocus)
         top_bar.addWidget(self.btn_export_daily)
 
+        self.btn_review_flagged = QPushButton("Review Flagged Sessions")
+        self.btn_review_flagged.clicked.connect(self.open_review_sessions)
+        self.btn_review_flagged.setFocusPolicy(Qt.NoFocus)
+        top_bar.addWidget(self.btn_review_flagged)
+
 
         # -------- REPORTS TAB --------
         reports_tab = QWidget()
@@ -303,6 +309,12 @@ class MainWindow(QMainWindow):
             if tab_name == "Reports":
                 self.student_id_input.setFocus()
 
+    def open_review_sessions(self):
+        self.attendance_controller.set_input_mode(InputMode.MANUAL)
+        dlg = ReviewSessionsWindow()
+        dlg.exec()
+        self.attendance_controller.set_input_mode(InputMode.SCANNER)
+
 
 
     def export_monthly_clicked(self):
@@ -388,7 +400,7 @@ class MainWindow(QMainWindow):
     def update_table(self, rows, present):
         self.table.setRowCount(len(rows))
 
-        for r, (sid, name, cls, start, end, dur) in enumerate(rows):
+        for r, (sid, name, cls, start, end, dur, is_est) in enumerate(rows):
             self.table.setItem(r, 0, QTableWidgetItem(sid))
             self.table.setItem(r, 1, QTableWidgetItem(name))
             self.table.setItem(r, 2, QTableWidgetItem(cls))

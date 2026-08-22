@@ -18,7 +18,8 @@ def export_student_report(student_id: str) -> str:
             date(start_at),
             time(start_at),
             time(end_at),
-            duration_sec
+            duration_sec,
+            is_estimated
         FROM sessions
         WHERE student_id = ?
         ORDER BY start_at
@@ -32,7 +33,7 @@ def export_student_report(student_id: str) -> str:
 
     # ---------- TOTALS ----------
     total_visits = len(rows)
-    total_seconds = sum((dur or 0) for _, _, _, dur in rows)
+    total_seconds = sum((dur or 0) for _, _, _, dur, _ in rows)
 
     first_date = rows[0][0]
     last_date = rows[-1][0]
@@ -68,20 +69,21 @@ def export_student_report(student_id: str) -> str:
     # ---- TABLE HEADER ----
     start_row = 7
     ws.append([])  # spacing
-    ws.append(["Date", "Entry Time", "Exit Time", "Duration"])
+    ws.append(["Date", "Entry Time", "Exit Time", "Duration", "Estimated"])
     ws.row_dimensions[start_row].font = bold
 
     # ---- TABLE DATA ----
-    for d, start, end, dur in rows:
+    for d, start, end, dur, is_est in rows:
         ws.append([
             d,
             start or "-",
             end or "-",
-            format_duration(dur or 0)
+            format_duration(dur or 0),
+            "Yes" if is_est else ""
         ])
 
     # ---- COLUMN WIDTHS ----
-    for col in ("A", "B", "C", "D"):
+    for col in ("A", "B", "C", "D", "E"):
         ws.column_dimensions[col].width = 22
 
     file_path = REPORT_DIR / f"Student_{student_id}.xlsx"

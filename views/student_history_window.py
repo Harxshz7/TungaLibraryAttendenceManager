@@ -68,9 +68,9 @@ class StudentHistoryWindow(QDialog):
 
         # ---------- TABLE ----------
         self.table = QTableWidget()
-        self.table.setColumnCount(4)
+        self.table.setColumnCount(5)
         self.table.setHorizontalHeaderLabels(
-            ["Date", "Entry Time", "Exit Time", "Duration"]
+            ["Date", "Entry Time", "Exit Time", "Duration", "Estimated"]
         )
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionMode(QTableWidget.NoSelection)
@@ -106,13 +106,17 @@ class StudentHistoryWindow(QDialog):
 
         total_seconds = 0
 
-        for r, (d, start, end, dur) in enumerate(rows):
+        for r, (d, start, end, dur, is_est) in enumerate(rows):
             self.table.setItem(r, 0, QTableWidgetItem(d or "-"))
             self.table.setItem(r, 1, QTableWidgetItem(start or "-"))
             self.table.setItem(r, 2, QTableWidgetItem(end or "-"))
             self.table.setItem(
                 r, 3,
                 QTableWidgetItem(format_duration(dur or 0))
+            )
+            self.table.setItem(
+                r, 4,
+                QTableWidgetItem("Yes" if is_est else "")
             )
             total_seconds += dur or 0
 
@@ -154,7 +158,7 @@ class StudentHistoryWindow(QDialog):
         bold = Font(bold=True)
 
         # ---- SUMMARY ----
-        total_seconds = sum((d or 0) for _, _, _, d in self.current_rows)
+        total_seconds = sum((d or 0) for _, _, _, d, _ in self.current_rows)
 
         ws["A1"] = "Student ID"
         ws["B1"] = self.student_id
@@ -175,18 +179,19 @@ class StudentHistoryWindow(QDialog):
         ws.append([])
 
         # ---- TABLE ----
-        ws.append(["Date", "Entry Time", "Exit Time", "Duration"])
+        ws.append(["Date", "Entry Time", "Exit Time", "Duration", "Estimated"])
         ws.row_dimensions[6].font = bold
 
-        for d, start, end, dur in self.current_rows:
+        for d, start, end, dur, is_est in self.current_rows:
             ws.append([
                 d,
                 start or "-",
                 end or "-",
-                format_duration(dur or 0)
+                format_duration(dur or 0),
+                "Yes" if is_est else ""
             ])
 
-        for col in ("A", "B", "C", "D"):
+        for col in ("A", "B", "C", "D", "E"):
             ws.column_dimensions[col].width = 22
 
         file_path = report_dir / f"Student_{self.student_id}_Filtered.xlsx"
@@ -232,7 +237,7 @@ class StudentHistoryWindow(QDialog):
         story.append(Spacer(1, 12))
 
         # ---------- META ----------
-        total_seconds = sum((d or 0) for _, _, _, d in self.current_rows)
+        total_seconds = sum((d or 0) for _, _, _, d, _ in self.current_rows)
 
         meta_text = f"""
         <b>Student ID:</b> {self.student_id}<br/>
@@ -248,15 +253,16 @@ class StudentHistoryWindow(QDialog):
 
         # ---------- TABLE ----------
         table_data = [
-            ["Date", "Entry Time", "Exit Time", "Duration"]
+            ["Date", "Entry Time", "Exit Time", "Duration", "Estimated"]
         ]
 
-        for d, start, end, dur in self.current_rows:
+        for d, start, end, dur, is_est in self.current_rows:
             table_data.append([
                 d,
                 start or "-",
                 end or "-",
-                format_duration(dur or 0)
+                format_duration(dur or 0),
+                "Yes" if is_est else ""
             ])
 
         table = Table(table_data, repeatRows=1)

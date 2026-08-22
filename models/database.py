@@ -39,7 +39,8 @@ def init_db():
         student_id TEXT NOT NULL,
         start_at TEXT NOT NULL,
         end_at TEXT,
-        duration_sec INTEGER
+        duration_sec INTEGER,
+        is_estimated INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE INDEX IF NOT EXISTS idx_sessions_open
