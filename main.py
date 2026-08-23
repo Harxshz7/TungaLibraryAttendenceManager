@@ -5,6 +5,7 @@ from PySide6.QtGui import QAction, QFontDatabase, QIcon
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 from utils.resource_utils import resource_path
 from views.main_window import MainWindow
+from models.database import init_db
 
 
 def load_fonts():
@@ -37,6 +38,7 @@ def build_tray_icon():
     return icon
 
 
+init_db()
 app = QApplication(sys.argv)
 load_fonts()
 # LOAD THEME HERE

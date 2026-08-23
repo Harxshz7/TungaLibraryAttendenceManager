@@ -1,5 +1,4 @@
 PySide6
 openpyxl
-
-
 pynput
+reportlab

@@ -26,7 +26,6 @@ A PySide6 desktop kiosk application for tracking library attendance via barcode/
 ```
 .
 ├── main.py                  # Entry point (tray, theme, kiosk mode)
-├── app.py                   # Legacy/alt entry point (no tray/theme)
 ├── requirements.txt
 ├── assets/                  # Logo, default avatar, fonts, GIF
 ├── controllers/
@@ -87,7 +86,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-`app.py` is a legacy/alt entry point that skips system tray and theme loading. Use `main.py` for the full experience.
+`python main.py`
 
 ## How It Works
 
