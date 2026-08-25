@@ -2,9 +2,10 @@ from PySide6.QtWidgets import (
     QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout,
     QTableWidget, QTableWidgetItem, QFrame, QGroupBox, QSizePolicy,
     QTabWidget, QPushButton, QComboBox, QSpinBox, QLineEdit,
-    QFileDialog, QMessageBox
+    QFileDialog, QMessageBox, QInputDialog
 )
 from PySide6.QtCore import QTimer, Qt, QTime
+from views.pin_dialog import PinDialog
 from PySide6.QtGui import QPixmap
 from datetime import date, datetime, timedelta
 from services.monthly_report_service import export_monthly_report
@@ -180,6 +181,11 @@ class MainWindow(QMainWindow):
         top_bar.addWidget(self.btn_import)
         self.btn_import.setFocusPolicy(Qt.NoFocus)
 
+        self.btn_change_pin = QPushButton("Change Admin PIN")
+        self.btn_change_pin.clicked.connect(self.change_admin_pin)
+        self.btn_change_pin.setFocusPolicy(Qt.NoFocus)
+        top_bar.addWidget(self.btn_change_pin)
+
         self.btn_export_daily = QPushButton("Export Daily Report")
         self.btn_export_daily.clicked.connect(self.export_today)
 
@@ -314,6 +320,11 @@ class MainWindow(QMainWindow):
 
     def export_monthly_clicked(self):
         self.attendance_controller.set_input_mode(InputMode.MANUAL)
+        
+        if not PinDialog.verify(self):
+            QMessageBox.warning(self, "Export Aborted", "Admin PIN verification failed.")
+            self.attendance_controller.set_input_mode(InputMode.SCANNER)
+            return
 
         month = self.month_combo.currentIndex() + 1
         year = self.year_spin.value()
@@ -333,6 +344,11 @@ class MainWindow(QMainWindow):
     def export_student_clicked(self):
         # Pause scanner while admin works
         self.attendance_controller.set_input_mode(InputMode.MANUAL)
+        
+        if not PinDialog.verify(self):
+            QMessageBox.warning(self, "Export Aborted", "Admin PIN verification failed.")
+            self.attendance_controller.set_input_mode(InputMode.SCANNER)
+            return
 
         sid = normalize_id(self.student_id_input.text())
 
@@ -442,8 +458,33 @@ class MainWindow(QMainWindow):
         # Return focus to scanner regardless of outcome
         self.attendance_controller.set_input_mode(InputMode.SCANNER)
 
+    def change_admin_pin(self):
+        self.attendance_controller.set_input_mode(InputMode.MANUAL)
+        
+        if not PinDialog.verify(self):
+            self.attendance_controller.set_input_mode(InputMode.SCANNER)
+            return
+            
+        new_pin, ok = QInputDialog.getText(self, "Change PIN", "Enter new Admin PIN:", QLineEdit.Password)
+        if ok and new_pin:
+            confirm_pin, ok2 = QInputDialog.getText(self, "Confirm PIN", "Confirm new Admin PIN:", QLineEdit.Password)
+            if ok2 and confirm_pin:
+                if new_pin == confirm_pin:
+                    from models.settings_repo import set_pin
+                    set_pin(new_pin)
+                    QMessageBox.information(self, "Success", "Admin PIN successfully updated.")
+                else:
+                    QMessageBox.warning(self, "Error", "PINs do not match.")
+        
+        self.attendance_controller.set_input_mode(InputMode.SCANNER)
+
     def export_today(self):
         self.attendance_controller.set_input_mode(InputMode.MANUAL)
+        
+        if not PinDialog.verify(self):
+            QMessageBox.warning(self, "Export Aborted", "Admin PIN verification failed.")
+            self.attendance_controller.set_input_mode(InputMode.SCANNER)
+            return
 
         try:
             path = export_daily_report(date.today())
@@ -466,8 +507,12 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         if self.kiosk_mode:
             event.ignore()
-        else:
+            return
+            
+        if PinDialog.verify(self):
             event.accept()
+        else:
+            event.ignore()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_F12:

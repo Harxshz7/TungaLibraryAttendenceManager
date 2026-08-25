@@ -57,7 +57,23 @@ def init_db():
     value TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT
+    );
+
     """)
+
+    cur.execute("SELECT value FROM settings WHERE key='admin_pin'")
+    if not cur.fetchone():
+        import hashlib
+        import os
+        salt = os.urandom(16).hex()
+        pin_hash = hashlib.sha256(("1234" + salt).encode('utf-8')).hexdigest()
+        cur.executescript(f"""
+            INSERT INTO settings (key, value) VALUES ('admin_pin_salt', '{salt}');
+            INSERT INTO settings (key, value) VALUES ('admin_pin', '{pin_hash}');
+        """)
 
     conn.commit()
     conn.close()

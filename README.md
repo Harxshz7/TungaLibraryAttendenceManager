@@ -88,6 +88,13 @@ python main.py
 
 `python main.py`
 
+## Admin PIN
+
+To secure reports and app exits, an Admin PIN is required:
+- **Default PIN:** `1234`
+- **Storage:** The PIN is securely hashed using SHA-256 with a per-install random salt, and both are stored in the local SQLite `settings` table.
+- **Changing the PIN:** You can change it directly in the app by clicking **"Change Admin PIN"** at the top right of the Attendance dashboard. You must verify the current PIN before setting a new one.
+
 ## How It Works
 
 1. On launch, `main.py` loads the Inter font, sets the QSS theme, creates `MainWindow`, and initializes the system tray. The `AttendanceController` starts a 30-second refresh timer.
