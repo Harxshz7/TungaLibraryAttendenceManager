@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>Student Attendance History</h2>
+    <form method="GET" action="/history">
+        <input type="text" name="student_id" placeholder="Enter Student ID (e.g., S-1023)" value="{{ student_id }}">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if student_id %}
+        <h3>Results for {{ student_id }} ({{ start_date }} to {{ end_date }})</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Duration (sec)</th>
+                    <th>Estimated?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in history %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] if row[2] else "Active" }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ "Yes" if row[4] else "No" }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No history found for this student in the last 30 days.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Enter a student ID to view their recent attendance history.</p>
+    {% endif %}
+</div>
+{% endblock %}

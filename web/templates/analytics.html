@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid">
+    <div class="card">
+        <h2>Daily Averages</h2>
+        <p>Average Visits: <span class="stat-value">{{ avg_visits }}</span></p>
+        <p>Average Total Hours: <span class="stat-value">{{ avg_hours }}</span></p>
+    </div>
+
+    <div class="card">
+        <h2>Peak Hours</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Hour (24h)</th>
+                    <th>Total Sessions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in peak_hours %}
+                <tr>
+                    <td>{{ row[0] }}:00 - {{ row[0] }}:59</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>Top Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Total Visits</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in top_users %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>Weekly Trends</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Weekday (0=Sun)</th>
+                    <th>Total Visits</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in weekly_trends %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

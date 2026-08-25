@@ -103,6 +103,21 @@ The application supports automated cloud backup of `attendance.db` to an S3-comp
 3. Set `backup_interval_minutes` to control the auto-backup frequency.
 Once configured, the app will upload backups in the background automatically. You can also manually trigger a backup or restore from the latest cloud backup using the buttons on the dashboard (Restore is gated by the Admin PIN).
 
+## Web Dashboard
+
+A lightweight, read-only web dashboard is available to remotely view live attendance data, student history, and analytics. It reads directly from the existing SQLite database in read-only mode, guaranteeing it will not corrupt or lock data while the desktop app is running.
+
+**Configuration:**
+1. Copy `data/web_config.example.json` to `data/web_config.json`.
+2. Update the `username` and `password_hash` (the password is required to be hashed with SHA-256 for Basic Auth). The example uses `admin` / `admin`.
+
+**Running the Dashboard:**
+Open a separate terminal and run:
+`python web/run_server.py`
+The dashboard will be available at `http://localhost:8000`.
+
+*Note: This server uses Basic Authentication and is intended for local network access. If deploying on the public internet, ensure it is placed behind a reverse proxy (like NGINX) with HTTPS enabled.*
+
 ## How It Works
 
 1. On launch, `main.py` loads the Inter font, sets the QSS theme, creates `MainWindow`, and initializes the system tray. The `AttendanceController` starts a 30-second refresh timer.
