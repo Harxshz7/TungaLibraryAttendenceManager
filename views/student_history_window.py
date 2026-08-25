@@ -140,6 +140,11 @@ class StudentHistoryWindow(QDialog):
 
     # ---------- EXPORT ----------
     def export_view(self):
+        from views.pin_dialog import PinDialog
+        if not PinDialog.verify(self):
+            QMessageBox.warning(self, "Export Aborted", "Admin PIN verification failed.")
+            return
+            
         if not self.current_rows:
             QMessageBox.warning(
                 self,
@@ -204,6 +209,11 @@ class StudentHistoryWindow(QDialog):
         )
 
     def export_pdf(self):
+        from views.pin_dialog import PinDialog
+        if not PinDialog.verify(self):
+            QMessageBox.warning(self, "Export Aborted", "Admin PIN verification failed.")
+            return
+            
         if not self.current_rows:
             QMessageBox.warning(
                 self,
