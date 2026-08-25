@@ -72,14 +72,14 @@ menu.addAction(exit_action)
 tray.setContextMenu(menu)
 app.setQuitOnLastWindowClosed(False)
 
-def show_dashboard():
+def show_dashboard(*args):
     window.show()
     window.raise_()
     window.activateWindow()
     window.showMaximized()  # or showFullScreen()
     window.raise_()
 
-def exit_app():
+def exit_app(*args):
     tray.hide()
     window.kiosk_mode = False
     window.close()
@@ -90,7 +90,7 @@ exit_action.triggered.connect(exit_app)
 
 tray.activated.connect(
     lambda reason: show_dashboard()
-    if reason == QSystemTrayIcon.Trigger else None
+    if reason == QSystemTrayIcon.ActivationReason.Trigger else None
 )
 
 def init_tray():
