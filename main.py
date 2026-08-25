@@ -10,14 +10,19 @@ from models.database import init_db
 
 def load_fonts():
     QFontDatabase.addApplicationFont(
-        resource_path("assets/fonts/Inter/Inter-Regular.ttf")
+        resource_path("assets/fonts/Inter/Inter.ttf")
     )
 
 
 def load_stylesheet(app, path):
     full_path = resource_path(path)
-    with open(full_path, "r", encoding="utf-8") as f:
-        app.setStyleSheet(f.read())
+    try:
+        with open(full_path, "r", encoding="utf-8") as f:
+            app.setStyleSheet(f.read())
+    except FileNotFoundError:
+        print(f"Warning: Theme file not found: {full_path}")
+    except Exception as e:
+        print(f"Warning: Failed to load theme '{path}': {e}")
 
 def build_tray_icon():
     icon = QIcon()

@@ -55,6 +55,12 @@ class InputCaptureWindow(QWidget):
         if not self._active:
             return
 
+        # Don't steal focus if a modal dialog is open
+        from PySide6.QtWidgets import QApplication
+        active_window = QApplication.activeWindow()
+        if active_window and active_window is not self:
+            return
+
         self.show()
         self.raise_()
         self.activateWindow()

@@ -1,26 +1,21 @@
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout,
-    QTableWidget, QTableWidgetItem, QFrame
+    QTableWidget, QTableWidgetItem, QFrame, QGroupBox, QSizePolicy,
+    QTabWidget, QPushButton, QComboBox, QSpinBox, QLineEdit,
+    QFileDialog, QMessageBox
 )
-from PySide6.QtWidgets import QGroupBox, QSizePolicy
-from PySide6.QtWidgets import QTabWidget, QPushButton, QComboBox, QSpinBox
+from PySide6.QtCore import QTimer, Qt, QTime
+from PySide6.QtGui import QPixmap
+from datetime import date, datetime, timedelta
 from services.monthly_report_service import export_monthly_report
 from views.student_history_window import StudentHistoryWindow
 from services.student_report_service import export_student_report
 from controllers.attendance_controller import AttendanceController
 from controllers.app_controller import AppController
-from PySide6.QtCore import QTimer, Qt, QTime
 from utils.id_utils import normalize_id
-from PySide6.QtWidgets import QLineEdit
 from utils.time_utils import format_duration
-from PySide6.QtWidgets import QPushButton, QFileDialog, QMessageBox
-from models.student_repo import import_students_from_csv
-from models.student_repo import get_student_basic_info
+from models.student_repo import import_students_from_csv, get_student_basic_info
 from services.daily_report_service import export_daily_report
-from PySide6.QtWidgets import QMessageBox
-from datetime import date
-from datetime import datetime, timedelta
-from PySide6.QtGui import QPixmap
 from views.analytics_tab import AnalyticsTab
 from views.review_sessions_window import ReviewSessionsWindow
 from models.input_mode import InputMode
