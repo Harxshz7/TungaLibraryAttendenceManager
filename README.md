@@ -95,6 +95,14 @@ To secure reports and app exits, an Admin PIN is required:
 - **Storage:** The PIN is securely hashed using SHA-256 with a per-install random salt, and both are stored in the local SQLite `settings` table.
 - **Changing the PIN:** You can change it directly in the app by clicking **"Change Admin PIN"** at the top right of the Attendance dashboard. You must verify the current PIN before setting a new one.
 
+## Cloud Backup
+
+The application supports automated cloud backup of `attendance.db` to an S3-compatible bucket (e.g. Backblaze B2, AWS S3).
+1. Rename `data/backup_config.example.json` to `data/backup_config.json`.
+2. Fill in your `bucket_name`, `endpoint_url`, `access_key`, and `secret_key`.
+3. Set `backup_interval_minutes` to control the auto-backup frequency.
+Once configured, the app will upload backups in the background automatically. You can also manually trigger a backup or restore from the latest cloud backup using the buttons on the dashboard (Restore is gated by the Admin PIN).
+
 ## How It Works
 
 1. On launch, `main.py` loads the Inter font, sets the QSS theme, creates `MainWindow`, and initializes the system tray. The `AttendanceController` starts a 30-second refresh timer.

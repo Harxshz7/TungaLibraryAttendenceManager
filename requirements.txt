@@ -4,3 +4,4 @@ pynput
 reportlab
 pytest
 pytest-mock
+boto3

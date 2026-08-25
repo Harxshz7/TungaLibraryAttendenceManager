@@ -1,0 +1,7 @@
+{
+  "bucket_name": "my-attendance-backups",
+  "endpoint_url": "https://s3.us-west-004.backblazeb2.com",
+  "access_key": "YOUR_ACCESS_KEY",
+  "secret_key": "YOUR_SECRET_KEY",
+  "backup_interval_minutes": 60
+}

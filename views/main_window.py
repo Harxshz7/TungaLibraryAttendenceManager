@@ -185,6 +185,16 @@ class MainWindow(QMainWindow):
         self.btn_change_pin.clicked.connect(self.change_admin_pin)
         self.btn_change_pin.setFocusPolicy(Qt.NoFocus)
         top_bar.addWidget(self.btn_change_pin)
+        
+        self.btn_backup = QPushButton("Backup")
+        self.btn_backup.clicked.connect(self.manual_backup)
+        self.btn_backup.setFocusPolicy(Qt.NoFocus)
+        top_bar.addWidget(self.btn_backup)
+
+        self.btn_restore = QPushButton("Restore")
+        self.btn_restore.clicked.connect(self.manual_restore)
+        self.btn_restore.setFocusPolicy(Qt.NoFocus)
+        top_bar.addWidget(self.btn_restore)
 
         self.btn_export_daily = QPushButton("Export Daily Report")
         self.btn_export_daily.clicked.connect(self.export_today)
@@ -456,6 +466,42 @@ class MainWindow(QMainWindow):
             )
 
         # Return focus to scanner regardless of outcome
+        self.attendance_controller.set_input_mode(InputMode.SCANNER)
+
+    def manual_backup(self):
+        self.attendance_controller.set_input_mode(InputMode.MANUAL)
+        from services.backup_service import backup_now
+        
+        success, msg = backup_now()
+        if success:
+            QMessageBox.information(self, "Backup Success", msg)
+        else:
+            QMessageBox.warning(self, "Backup Failed", msg)
+            
+        self.attendance_controller.set_input_mode(InputMode.SCANNER)
+
+    def manual_restore(self):
+        self.attendance_controller.set_input_mode(InputMode.MANUAL)
+        
+        if not PinDialog.verify(self):
+            self.attendance_controller.set_input_mode(InputMode.SCANNER)
+            return
+            
+        reply = QMessageBox.question(
+            self,
+            "Confirm Restore",
+            "Are you sure you want to restore from the latest cloud backup? THIS WILL OVERWRITE CURRENT DATA.",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        
+        if reply == QMessageBox.Yes:
+            from services.backup_service import restore_latest
+            success, msg = restore_latest()
+            if success:
+                QMessageBox.information(self, "Restore Success", msg)
+            else:
+                QMessageBox.warning(self, "Restore Failed", msg)
+                
         self.attendance_controller.set_input_mode(InputMode.SCANNER)
 
     def change_admin_pin(self):

@@ -36,6 +36,7 @@ desktop.ini
 
 # Data
 data/*.db
+data/backup_config.json
 
 # Photos
 photos/
