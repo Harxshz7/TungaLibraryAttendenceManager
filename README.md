@@ -107,6 +107,8 @@ Once configured, the app will upload backups in the background automatically. Yo
 
 A lightweight, read-only web dashboard is available to remotely view live attendance data, student history, and analytics. It reads directly from the existing SQLite database in read-only mode, guaranteeing it will not corrupt or lock data while the desktop app is running.
 
+- **Live Auto-Refresh:** The live sessions view automatically updates in real-time via Server-Sent Events (`/events/live-sessions`), detecting new check-ins and check-outs without requiring manual page reloads.
+
 **Configuration:**
 1. Copy `data/web_config.example.json` to `data/web_config.json`.
 2. Update the `username` and `password_hash` (the password is required to be hashed with SHA-256 for Basic Auth). The example uses `admin` / `admin`.

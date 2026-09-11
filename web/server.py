@@ -2,11 +2,13 @@ import sqlite3
 import json
 import hashlib
 import secrets
+import asyncio
 from pathlib import Path
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import StreamingResponse
 
 # --- Patch the Database Connection to be Read-Only ---
 import models.database
@@ -65,6 +67,55 @@ def health_check():
 def dashboard_home(request: Request, username: str = Depends(get_current_username)):
     sessions = get_live_sessions()
     return templates.TemplateResponse("index.html", {"request": request, "sessions": sessions})
+
+@app.get("/events/live-sessions")
+async def live_sessions_events(request: Request, username: str = Depends(get_current_username)):
+    async def event_generator():
+        last_signature = None
+        while True:
+            if await request.is_disconnected():
+                break
+
+            try:
+                sessions = get_live_sessions()
+                # Track structural changes: student_id, name, class, start_at, end_at, is_estimated
+                signature = [(s[0], s[1], s[2], s[3], s[4], s[6]) for s in sessions]
+
+                if signature != last_signature:
+                    last_signature = signature
+                    payload = [
+                        {
+                            "student_id": s[0],
+                            "name": s[1],
+                            "class": s[2],
+                            "start_at": s[3],
+                            "end_at": s[4] if s[4] else None,
+                            "duration_sec": s[5],
+                            "is_estimated": s[6]
+                        }
+                        for s in sessions
+                    ]
+                    yield f"data: {json.dumps(payload)}\n\n"
+                else:
+                    # Keep-alive ping comment
+                    yield ": ping\n\n"
+            except Exception:
+                break
+
+            try:
+                await asyncio.sleep(5)
+            except asyncio.CancelledError:
+                break
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
 
 @app.get("/history")
 def history_view(request: Request, student_id: str = "", username: str = Depends(get_current_username)):

@@ -2,7 +2,13 @@
 
 {% block content %}
 <div class="card">
-    <h2>Live Sessions (Today)</h2>
+    <div class="card-header-row">
+        <h2>Live Sessions (Today)</h2>
+        <div id="live-indicator" class="live-badge" title="Connection status">
+            <span class="pulse-dot"></span>
+            <span id="live-status-text">Live</span>
+        </div>
+    </div>
     <table>
         <thead>
             <tr>
@@ -14,7 +20,7 @@
                 <th>Duration (sec)</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="live-sessions-body">
             {% for session in sessions %}
             <tr>
                 <td>{{ session[0] }}</td>
@@ -32,4 +38,6 @@
         </tbody>
     </table>
 </div>
+
+<script src="/static/live-refresh.js"></script>
 {% endblock %}
