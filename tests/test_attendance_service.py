@@ -57,7 +57,6 @@ def test_handle_scan_short_session(db_conn, monkeypatch):
             return datetime.fromisoformat(date_string)
             
     monkeypatch.setattr("services.attendance_service.datetime", MockDatetime)
-    monkeypatch.setattr("services.attendance_service.random.randint", lambda a, b: 180)
     
     handle_scan('S3')
     
@@ -68,3 +67,4 @@ def test_handle_scan_short_session(db_conn, monkeypatch):
     assert row[0] == '2023-10-01 10:03:00'
     assert row[1] == 180
     assert row[2] == 0
+

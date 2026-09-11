@@ -38,7 +38,7 @@ A PySide6 desktop kiosk application for tracking library attendance via barcode/
 │   ├── session_repo.py      # Queries: live sessions, present count, student history
 │   └── student_repo.py      # CSV import, student info lookup
 ├── services/
-│   ├── attendance_service.py       # handle_scan(): open/close sessions with duration normalization
+│   ├── attendance_service.py       # handle_scan(): open/close sessions with true elapsed duration
 │   ├── session_normalizer.py       # Auto-close stale sessions (>50 min)
 │   ├── daily_report_service.py     # Daily Excel export
 │   ├── monthly_report_service.py   # Monthly Excel export (Degree/PUC/Lecturers split)
@@ -124,7 +124,7 @@ The dashboard will be available at `http://localhost:8000`.
 2. When a barcode scanner scans an ID, `InputCaptureWindow` (a hidden 1x1px Qt window) receives the keystrokes and fires `on_scan_callback`.
 3. The callback normalizes the ID via `normalize_id()` (e.g., `1623` → `S-1623`), looks up the student in `get_student_basic_info()`, and calls `AttendanceController.process_scan()`.
 4. `process_scan()` calls `handle_scan()` in `attendance_service.py`:
-   - If the student has an open session, it closes it (normalizing duration: short sessions bumped to 8-15 min, long sessions capped at 40-50 min).
+   - If the student has an open session, it closes it, calculating and storing the exact elapsed duration.
    - If no open session, it creates one.
 5. A `StudentPopup` is shown for 3.2 seconds with the student's photo, name, class, check-in/out time, and visit count or session duration.
 6. The live dashboard table (`QTableWidget`) refreshes every 30 seconds via `get_live_sessions()`, showing today's sessions with real-time duration for open ones.
