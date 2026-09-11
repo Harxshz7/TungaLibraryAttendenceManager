@@ -66,7 +66,7 @@ def health_check():
 @app.get("/")
 def dashboard_home(request: Request, username: str = Depends(get_current_username)):
     sessions = get_live_sessions()
-    return templates.TemplateResponse("index.html", {"request": request, "sessions": sessions})
+    return templates.TemplateResponse(request=request, name="index.html", context={"sessions": sessions})
 
 @app.get("/events/live-sessions")
 async def live_sessions_events(request: Request, username: str = Depends(get_current_username)):
@@ -127,8 +127,7 @@ def history_view(request: Request, student_id: str = "", username: str = Depends
     if student_id:
         history = get_student_history_range(student_id, start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
         
-    return templates.TemplateResponse("history.html", {
-        "request": request, 
+    return templates.TemplateResponse(request=request, name="history.html", context={
         "student_id": student_id,
         "history": history,
         "start_date": start_date.strftime("%Y-%m-%d"),
@@ -142,11 +141,11 @@ def analytics_view(request: Request, username: str = Depends(get_current_usernam
     top_users = get_top_users()
     weekly_trends = get_weekly_trends()
     
-    return templates.TemplateResponse("analytics.html", {
-        "request": request,
+    return templates.TemplateResponse(request=request, name="analytics.html", context={
         "avg_visits": avg_visits,
         "avg_hours": avg_hours,
         "peak_hours": peak_hours,
         "top_users": top_users,
         "weekly_trends": weekly_trends
     })
+
