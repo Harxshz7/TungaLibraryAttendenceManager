@@ -101,7 +101,8 @@ The application supports automated cloud backup of `attendance.db` to an S3-comp
 1. Rename `data/backup_config.example.json` to `data/backup_config.json`.
 2. Fill in your `bucket_name`, `endpoint_url`, `access_key`, and `secret_key`.
 3. Set `backup_interval_minutes` to control the auto-backup frequency.
-Once configured, the app will upload backups in the background automatically. You can also manually trigger a backup or restore from the latest cloud backup using the buttons on the dashboard (Restore is gated by the Admin PIN).
+
+Once configured, backups run automatically in the background every `backup_interval_minutes` without freezing the UI. The application status bar displays real-time backup health ("Last backup: <timestamp>" or failure details). You can also manually trigger a backup at any time with the "Backup" button or restore from the latest cloud backup using "Restore" (gated by the Admin PIN).
 
 ## Web Dashboard
 

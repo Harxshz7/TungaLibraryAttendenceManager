@@ -288,8 +288,22 @@ class MainWindow(QMainWindow):
         tabs.addTab(analytics_tab, "Analytics")
 
         self.app_controller = AppController()
+        self.app_controller.backup_status_changed.connect(self.update_backup_status)
+
+        # Status Bar Backup Indicator
+        self.lbl_backup_status = QLabel()
+        from services.backup_service import load_backup_config
+        cfg = load_backup_config()
+        if cfg:
+            self.lbl_backup_status.setText("Cloud Backup: Ready")
+        else:
+            self.lbl_backup_status.setText("Cloud Backup: Not configured")
+        self.lbl_backup_status.setStyleSheet("color: #4b5878; font-size: 12px; padding: 2px 8px;")
+        self.statusBar().addPermanentWidget(self.lbl_backup_status)
+
         self.app_controller.auto_export_yesterday()
         self.attendance_controller.refresh()
+
 
 
     # def handle_background_scan(self, raw):
@@ -468,17 +482,35 @@ class MainWindow(QMainWindow):
         # Return focus to scanner regardless of outcome
         self.attendance_controller.set_input_mode(InputMode.SCANNER)
 
+    def update_backup_status(self, success: bool, status_text: str):
+        self.lbl_backup_status.setText(status_text)
+        if success:
+            self.lbl_backup_status.setStyleSheet("color: #137333; font-size: 12px; padding: 2px 8px;")
+        else:
+            self.lbl_backup_status.setStyleSheet("color: #d93025; font-size: 12px; padding: 2px 8px;")
+
     def manual_backup(self):
         self.attendance_controller.set_input_mode(InputMode.MANUAL)
-        from services.backup_service import backup_now
-        
-        success, msg = backup_now()
-        if success:
-            QMessageBox.information(self, "Backup Success", msg)
-        else:
-            QMessageBox.warning(self, "Backup Failed", msg)
-            
-        self.attendance_controller.set_input_mode(InputMode.SCANNER)
+        self.lbl_backup_status.setText("Backup in progress...")
+        self.lbl_backup_status.setStyleSheet("color: #1a4b8c; font-size: 12px; padding: 2px 8px;")
+        self.btn_backup.setEnabled(False)
+
+        def _on_complete(success, msg):
+            def _ui():
+                self.btn_backup.setEnabled(True)
+                if success:
+                    QMessageBox.information(self, "Backup Success", msg)
+                else:
+                    QMessageBox.warning(self, "Backup Failed", msg)
+                self.attendance_controller.set_input_mode(InputMode.SCANNER)
+            QTimer.singleShot(0, _ui)
+
+        started = self.app_controller.run_backup_async(callback=_on_complete)
+        if not started:
+            self.btn_backup.setEnabled(True)
+            QMessageBox.warning(self, "Backup", "A backup is already in progress.")
+            self.attendance_controller.set_input_mode(InputMode.SCANNER)
+
 
     def manual_restore(self):
         self.attendance_controller.set_input_mode(InputMode.MANUAL)
